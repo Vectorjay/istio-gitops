@@ -1,0 +1,9 @@
+defaultRevision: "default"
+
+validationURL: ""
+validationCABundle: ""
+
+enableIstioConfigCRDs: true
+
+experimental:
+  stableValidationPolicy: false
