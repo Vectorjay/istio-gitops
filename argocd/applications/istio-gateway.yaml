@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: istio-gateway
+  namespace: argocd
+
+spec:
+  project: default
+
+  sources:
+    # Istio Helm chart
+    - repoURL: https://blob.istio.io/istio-release/charts
+      chart: gateway
+      targetRevision: 1.31.3
+
+      helm:
+        releaseName: istio-ingressgateway
+        valueFiles:
+          - $values/istio/gateway/values.yaml
+
+    # Git repository containing Helm values
+    - repoURL: https://github.com/Vectorjay/istio-gitops.git
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-ingress
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
